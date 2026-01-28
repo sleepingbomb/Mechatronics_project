@@ -14,16 +14,18 @@ Visit the project website: [https://yourusername.github.io/motor-control-system/
 ```
 ├── index.html      # Main website file
 ├── report.pdf      # Full project report
-├── final.MOV       # Demo video
 └── README.md       # This file
 ```
+
+## 🎬 Demo Video
+
+[Watch the demo video on Google Drive](https://drive.google.com/file/d/1rqqiYZKDZaguEpFDiF7OSoR5UjCef8WX/view)
 
 ## 🚀 Deployment Instructions
 
 1. **Upload all files** to your GitHub repository:
    - `index.html`
    - `report.pdf`
-   - `final.MOV`
    - `README.md`
 
 2. **Enable GitHub Pages:**
