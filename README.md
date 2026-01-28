@@ -7,7 +7,7 @@ A closed-loop motor position control system implemented on an Arduino-based plat
 
 ## 🌐 Live Website
 
-Visit the project website: [https://sleepingbomb.github.io/motor-control-system/]([https://sleepingbomb.github.io/motor-control-system](https://sleepingbomb.github.io/Mechatronics_project/))
+Visit the project website: [([https://sleepingbomb.github.io/motor-control-system](https://sleepingbomb.github.io/Mechatronics_project/))
 
 ## 📁 Repository Structure
 
