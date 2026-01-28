@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closed-Loop Motor Control System | Anusha Chatterjee</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --border-color: #30363d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-blue: #58a6ff;
+            --accent-cyan: #39d0d8;
+            --accent-green: #3fb950;
+            --accent-purple: #a371f7;
+            --accent-orange: #f0883e;
+            --accent-red: #f85149;
+            --code-bg: #0d1117;
+            --gradient-start: #1a1f2e;
+            --gradient-end: #0d1117;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .logo-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        nav a {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        nav a:hover {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--bg-primary) 50%, #0f1419 100%);
+            padding: 5rem 2rem 4rem;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(88, 166, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(57, 208, 216, 0.06) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .repo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-tertiary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .repo-badge svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 2rem;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: fit-content;
+        }
+
+        .author-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .author-details h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .author-details span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 3rem;
+        }
+
+        @media (max-width: 900px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Article Content */
+        article {
+            min-width: 0;
+        }
+
+        section {
+            margin-bottom: 3.5rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 1.5rem;
+            background: linear-gradient(180deg, var(--accent-cyan), var(--accent-blue));
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--accent-cyan);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--text-secondary);
+        }
+
+        /* Code blocks */
+        .equation-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            text-align: center;
+            color: var(--accent-cyan);
+            overflow-x: auto;
+        }
+
+        /* Component Cards */
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .component-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .component-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .component-card h4 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .component-card h4::before {
+            content: '▸';
+            color: var(--accent-green);
+        }
+
+        .component-card p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+
+        .component-card ul {
+            margin: 0.5rem 0 0 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .component-card li {
+            margin-bottom: 0.3rem;
+        }
+
+        /* Controller Comparison */
+        .controller-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .controller-section h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .controller-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .badge-p {
+            background: rgba(248, 81, 73, 0.15);
+            color: var(--accent-red);
+        }
+
+        .badge-pd {
+            background: rgba(240, 136, 62, 0.15);
+            color: var(--accent-orange);
+        }
+
+        .badge-pid {
+            background: rgba(63, 185, 80, 0.15);
+            color: var(--accent-green);
+        }
+
+        /* Results Gallery */
+        .results-gallery {
+            display: grid;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .result-group {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--bg-secondary);
+        }
+
+        .result-header {
+            padding: 1rem 1.5rem;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .result-header h4 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .result-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1px;
+            background: var(--border-color);
+        }
+
+        .result-image {
+            background: var(--bg-primary);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .result-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .result-image figcaption {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+        }
+
+        /* Sidebar */
+        aside {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .sidebar-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-card h4 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tech-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            padding: 0.35rem 0.75rem;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .toc-list {
+            list-style: none;
+        }
+
+        .toc-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc-list a {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0;
+            transition: color 0.2s ease;
+        }
+
+        .toc-list a::before {
+            content: '›';
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .toc-list a:hover {
+            color: var(--accent-blue);
+        }
+
+        .video-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(88, 166, 255, 0.1) 0%, rgba(57, 208, 216, 0.1) 100%);
+            border: 1px solid var(--accent-blue);
+            border-radius: 8px;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .video-link:hover {
+            background: linear-gradient(135deg, rgba(88, 166, 255, 0.2) 0%, rgba(57, 208, 216, 0.2) 100%);
+            transform: translateY(-1px);
+        }
+
+        .video-link svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Conclusion */
+        .conclusion-box {
+            background: linear-gradient(135deg, rgba(63, 185, 80, 0.08) 0%, rgba(57, 208, 216, 0.08) 100%);
+            border: 1px solid var(--accent-green);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .conclusion-box h3 {
+            color: var(--accent-green);
+            margin-top: 0;
+        }
+
+        /* Key Findings */
+        .findings-list {
+            display: grid;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .finding-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .finding-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            flex-shrink: 0;
+        }
+
+        .finding-icon.p {
+            background: rgba(248, 81, 73, 0.15);
+            color: var(--accent-red);
+        }
+
+        .finding-icon.pd {
+            background: rgba(240, 136, 62, 0.15);
+            color: var(--accent-orange);
+        }
+
+        .finding-icon.pid {
+            background: rgba(63, 185, 80, 0.15);
+            color: var(--accent-green);
+        }
+
+        .finding-content h5 {
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+            color: var(--text-primary);
+        }
+
+        .finding-content p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+
+        /* Video Container */
+        .video-container {
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .video-container video {
+            display: block;
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            background: #000;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        footer p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-content, section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        section:nth-child(2) { animation-delay: 0.1s; }
+        section:nth-child(3) { animation-delay: 0.2s; }
+        section:nth-child(4) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="#" class="logo">
+                <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="16" cy="16" r="6" fill="var(--accent-cyan)"/>
+                    <path d="M16 6v4M16 22v4M6 16h4M22 16h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span class="logo-text">motor-control</span>
+            </a>
+            <nav>
+                <a href="#overview">Overview</a>
+                <a href="#simulink">Simulink</a>
+                <a href="#controllers">Controllers</a>
+                <a href="#results">Results</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="repo-badge">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8z"/></svg>
+                Academic Project • Control Systems
+            </div>
+            <h1>Closed-Loop Motor Control System</h1>
+            <p class="hero-subtitle">
+                Development and validation of a closed-loop motor position control system on an Arduino-based platform with P, PD, and PID controllers for DC motor tracking.
+            </p>
+            <div class="author-info">
+                <div class="author-avatar">AC</div>
+                <div class="author-details">
+                    <h3>Anusha Chatterjee</h3>
+                    <span>ASUID: 1234397790</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <article>
+            <section id="overview">
+                <h2>Project Overview</h2>
+                <p>
+                    The goal of this project is to develop and validate a closed-loop motor position control system on an Arduino-based platform that can accurately track a desired reference signal. By designing Simulink models and implementing P, PD, and PID controllers for a DC motor with quadrature encoder feedback, the project aims to systematically tune and compare the three control schemes.
+                </p>
+                <p>
+                    The evaluation focuses on three key performance metrics: <strong>stability</strong>, <strong>steady-state error</strong>, and <strong>dynamic response</strong>. The objective is to demonstrate how adding derivative and integral actions improves tracking performance and reduces error, resulting in a more precise and robust motion control system.
+                </p>
+            </section>
+
+            <section id="simulink">
+                <h2>Simulink Model Architecture</h2>
+                <p>
+                    The overall Simulink model implements a closed-loop position control system for a DC motor using an Arduino board and a quadrature encoder. The system is composed of six main functional blocks:
+                </p>
+                
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h4>Direction Control Block</h4>
+                        <p>Sets the rotation direction using digital outputs on pins 4 and 5.</p>
+                        <ul>
+                            <li>Digital Output (Pin 4 & 5)</li>
+                            <li>Logic constants (uint8 format)</li>
+                            <li>[1,0] = CW, [0,1] = CCW</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>Encoder Feedback Block</h4>
+                        <p>Reads motor shaft position from the quadrature encoder.</p>
+                        <ul>
+                            <li>Encoder block (Pins 2 & 3)</li>
+                            <li>Function block (counts → angle)</li>
+                            <li>Gain block for scaling/sign</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>Error Computation Block</h4>
+                        <p>Compares desired position to actual position.</p>
+                        <ul>
+                            <li>Reference input (θ_des)</li>
+                            <li>Feedback input (θ_act)</li>
+                            <li>Subtract block: e(t) = θ_des - θ_act</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>PID Controller Block</h4>
+                        <p>Generates control effort based on tracking error.</p>
+                        <ul>
+                            <li>Configurable P, PD, or PID</li>
+                            <li>Absolute value sub-block |u|</li>
+                            <li>Adjustable gains (Kp, Ki, Kd)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>Reference Generator Block</h4>
+                        <p>Defines the target position trajectory.</p>
+                        <ul>
+                            <li>Sine wave generator</li>
+                            <li>Gain blocks for amplitude</li>
+                            <li>Offset and sign adjustment</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="component-card">
+                        <h4>PWM Output Block</h4>
+                        <p>Converts control effort to PWM signal.</p>
+                        <ul>
+                            <li>Arduino PWM Output (Pin 9)</li>
+                            <li>Duty cycle: 0-255 range</li>
+                            <li>Motor driver interface</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="controllers">
+                <h2>Controller Operation</h2>
+                <p>
+                    The same closed-loop Simulink model evaluates three different control strategies. The plant (DC motor + driver + encoder) and feedback structure remain identical; only the controller gains change between experiments.
+                </p>
+
+                <div class="controller-section">
+                    <h4><span class="controller-badge badge-p">P</span> Proportional Control</h4>
+                    <p>Only the proportional gain (K<sub>p</sub>) is enabled, with integral and derivative gains set to zero. The controller output is directly proportional to the instantaneous position error:</p>
+                    <div class="equation-block">
+                        u(t) = K<sub>p</sub> · e(t)
+                    </div>
+                    <p>Higher K<sub>p</sub> reduces tracking error and speeds up response, but excessive values cause overshoot and oscillation. With P control alone, a non-zero steady-state error is generally expected.</p>
+                </div>
+
+                <div class="controller-section">
+                    <h4><span class="controller-badge badge-pd">PD</span> Proportional-Derivative Control</h4>
+                    <p>Both proportional (K<sub>p</sub>) and derivative (K<sub>d</sub>) gains are used. The controller reacts to both the magnitude and rate of change of the error:</p>
+                    <div class="equation-block">
+                        u(t) = K<sub>p</sub> · e(t) + K<sub>d</sub> · de(t)/dt
+                    </div>
+                    <p>The derivative action predicts future error behavior and counteracts rapid changes, reducing overshoot and oscillations. PD control provides faster, more stable transient response but may still exhibit steady-state error.</p>
+                </div>
+
+                <div class="controller-section">
+                    <h4><span class="controller-badge badge-pid">PID</span> Proportional-Integral-Derivative Control</h4>
+                    <p>All three gains—proportional (K<sub>p</sub>), integral (K<sub>i</sub>), and derivative (K<sub>d</sub>)—are activated:</p>
+                    <div class="equation-block">
+                        u(t) = K<sub>p</sub> · e(t) + K<sub>i</sub> · ∫e(t)dt + K<sub>d</sub> · de(t)/dt
+                    </div>
+                    <p>The integral term accumulates error over time and forces it toward zero, eliminating the steady-state offset present in P and PD control. PID provides the best overall tracking performance.</p>
+                </div>
+            </section>
+
+            <section id="results">
+                <h2>Experimental Results</h2>
+                <p>
+                    For each control mode, the motor's response to the same reference signal was recorded and analyzed. The plots show the reference signal (dashed red) versus actual motor position (solid blue) over a 10-second period.
+                </p>
+
+                <div class="results-gallery">
+                    <div class="result-group">
+                        <div class="result-header">
+                            <h4><span class="controller-badge badge-pd">PD</span> PD Control Results</h4>
+                        </div>
+                        <div class="result-images">
+                            <figure class="result-image">
+                                <img src="images/pd_control_1.png" alt="PD Control: Kp=5, Kd=1.5" onerror="this.style.display='none'">
+                                <figcaption>Kp = 5, Kd = 1.5, ts = 0.01</figcaption>
+                            </figure>
+                            <figure class="result-image">
+                                <img src="images/pd_control_2.png" alt="PD Control: Kp=9, Kd=1" onerror="this.style.display='none'">
+                                <figcaption>Kp = 9, Kd = 1, ts = 0.01</figcaption>
+                            </figure>
+                            <figure class="result-image">
+                                <img src="images/pd_control_3.png" alt="PD Control: Kp=9, Kd=1 (double)" onerror="this.style.display='none'">
+                                <figcaption>Kp = 9, Kd = 1, ts = 0.005 (double)</figcaption>
+                            </figure>
+                        </div>
+                    </div>
+
+                    <div class="result-group">
+                        <div class="result-header">
+                            <h4><span class="controller-badge badge-p">P</span> P Control Results</h4>
+                        </div>
+                        <div class="result-images">
+                            <figure class="result-image">
+                                <img src="images/p_control_1.png" alt="P Control: Kp=3" onerror="this.style.display='none'">
+                                <figcaption>Kp = 3, ts = 0.005 (double)</figcaption>
+                            </figure>
+                            <figure class="result-image">
+                                <img src="images/p_control_2.png" alt="P Control: Kp=4, freq=0.1" onerror="this.style.display='none'">
+                                <figcaption>Kp = 4, ts = 0.01, freq = 0.1</figcaption>
+                            </figure>
+                            <figure class="result-image">
+                                <img src="images/p_control_3.png" alt="P Control: Kp=3, freq=0.1" onerror="this.style.display='none'">
+                                <figcaption>Kp = 3, ts = 0.01, freq = 0.1</figcaption>
+                            </figure>
+                        </div>
+                    </div>
+
+                    <div class="result-group">
+                        <div class="result-header">
+                            <h4><span class="controller-badge badge-pid">PID</span> PID Control Results</h4>
+                        </div>
+                        <div class="result-images">
+                            <figure class="result-image">
+                                <img src="images/pid_control_1.png" alt="PID Control: Kp=3, Kd=1.5, Ki=0.5" onerror="this.style.display='none'">
+                                <figcaption>Kp = 3, Kd = 1.5, Ki = 0.5, freq = 0.1</figcaption>
+                            </figure>
+                            <figure class="result-image">
+                                <img src="images/pid_control_2.png" alt="PID Control: Kp=3, Kd=2, Ki=1" onerror="this.style.display='none'">
+                                <figcaption>Kp = 3, Kd = 2, Ki = 1, freq = 0.1</figcaption>
+                            </figure>
+                            <figure class="result-image">
+                                <img src="images/pid_control_3.png" alt="PID Control: Kp=3, Kd=2, Ki=1 (double)" onerror="this.style.display='none'">
+                                <figcaption>Kp = 3, Kd = 2, Ki = 1, ts = 0.001 (slight overshoot)</figcaption>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="resources">
+                <h2>Project Resources</h2>
+                
+                <h3>Demo Video</h3>
+                <div class="video-container">
+                    <video controls width="100%" style="border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-secondary);">
+                        <source src="final.MOV" type="video/quicktime">
+                        <source src="final.MOV" type="video/mp4">
+                        Your browser does not support the video tag. 
+                        <a href="final.MOV" download>Download the video</a>
+                    </video>
+                </div>
+
+                <h3>Project Report</h3>
+                <div class="pdf-container" style="margin: 1.5rem 0;">
+                    <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden;">
+                        <div style="padding: 1rem 1.5rem; background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
+                            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-secondary);">
+                                📄 report.pdf
+                            </span>
+                            <a href="report.pdf" download style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--accent-blue); text-decoration: none;">
+                                ⬇ Download
+                            </a>
+                        </div>
+                        <iframe src="report.pdf" width="100%" height="600px" style="border: none; display: block;"></iframe>
+                    </div>
+                </div>
+            </section>
+
+            <section id="conclusion">
+                <h2>Conclusion</h2>
+                
+                <div class="findings-list">
+                    <div class="finding-item">
+                        <div class="finding-icon p">P</div>
+                        <div class="finding-content">
+                            <h5>Proportional Control</h5>
+                            <p>Simple to implement and achieves basic tracking, but typically leaves noticeable steady-state error and may cause oscillations when gain is increased too much.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="finding-item">
+                        <div class="finding-icon pd">PD</div>
+                        <div class="finding-content">
+                            <h5>Proportional-Derivative Control</h5>
+                            <p>Significantly improves transient response by reducing overshoot and oscillations through derivative damping, but still cannot completely remove steady-state error.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="finding-item">
+                        <div class="finding-icon pid">PID</div>
+                        <div class="finding-content">
+                            <h5>Proportional-Integral-Derivative Control</h5>
+                            <p>Provides the best overall performance—integral action drives steady-state error close to zero while maintaining acceptable rise time and stability when properly tuned.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="conclusion-box">
+                    <h3>Key Takeaway</h3>
+                    <p>
+                        This project successfully demonstrates how the addition of derivative and integral terms to a proportional controller can enhance tracking accuracy and robustness in a practical motor control system. The systematic comparison of P, PD, and PID controllers provides clear evidence of the trade-offs involved in tuning real-world control systems.
+                    </p>
+                </div>
+            </section>
+        </article>
+
+        <aside>
+            <div class="sidebar-card">
+                <h4>Table of Contents</h4>
+                <ul class="toc-list">
+                    <li><a href="#overview">Project Overview</a></li>
+                    <li><a href="#simulink">Simulink Model</a></li>
+                    <li><a href="#controllers">Controllers</a></li>
+                    <li><a href="#results">Results</a></li>
+                    <li><a href="#resources">Resources</a></li>
+                    <li><a href="#conclusion">Conclusion</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-card">
+                <h4>Technologies</h4>
+                <div class="tech-stack">
+                    <span class="tech-tag">MATLAB</span>
+                    <span class="tech-tag">Simulink</span>
+                    <span class="tech-tag">Arduino Uno</span>
+                    <span class="tech-tag">DC Motor</span>
+                    <span class="tech-tag">Quadrature Encoder</span>
+                    <span class="tech-tag">PWM Control</span>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <h4>Demo Video</h4>
+                <a href="final.MOV" target="_blank" class="video-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Watch Project Demo
+                </a>
+            </div>
+
+            <div class="sidebar-card">
+                <h4>Project Report</h4>
+                <a href="report.pdf" target="_blank" class="video-link" style="border-color: var(--accent-purple); color: var(--accent-purple); background: linear-gradient(135deg, rgba(163, 113, 247, 0.1) 0%, rgba(88, 166, 255, 0.1) 100%);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    View Full Report (PDF)
+                </a>
+            </div>
+
+            <div class="sidebar-card">
+                <h4>Performance Metrics</h4>
+                <div class="tech-stack">
+                    <span class="tech-tag">Rise Time</span>
+                    <span class="tech-tag">Overshoot</span>
+                    <span class="tech-tag">Settling Time</span>
+                    <span class="tech-tag">Steady-State Error</span>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer>
+        <p>© 2024 Anusha Chatterjee • Closed-Loop Motor Control System Project</p>
+    </footer>
+</body>
+</html>
